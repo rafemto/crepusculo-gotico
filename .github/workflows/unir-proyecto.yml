@@ -1,0 +1,23 @@
+name: Unir proyecto
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  unir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar partes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download v15.3 --repo ${{ github.repository }} --pattern 'crepusculo-godot-v15-3-proyecto.zip.parte*'
+      - name: Unir y verificar
+        run: |
+          cat crepusculo-godot-v15-3-proyecto.zip.parte00 crepusculo-godot-v15-3-proyecto.zip.parte01 > crepusculo-godot-v15-3-proyecto.zip
+          echo "ee7404af473349ca2475aee0c3f3dcbf10693d018a92bcf5a666de0e15dff0bb  crepusculo-godot-v15-3-proyecto.zip" | sha256sum -c -
+      - name: Subir ZIP unido
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload v15.3 --repo ${{ github.repository }} crepusculo-godot-v15-3-proyecto.zip
